@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy - MedFlow Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <span>MedFlow</span> Pro
+      </div>
+      <nav class="main-nav">
+        <a href="reception.html">Reception</a>
+        <a href="doctor.html">Doctor</a>
+        <a href="pharmacy.html" class="active">Pharmacy</a>
+        <a href="lab.html">Lab</a>
+      </nav>
+      <div style="font-weight: 500; color: var(--text-muted);">
+        Pharmacy Center
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+
+      <!-- Stats Widgets -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Pending Orders</div>
+          <div class="stat-value" id="stat-pending" style="color: var(--status-waiting);">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ready for Pickup</div>
+          <div class="stat-value" id="stat-prepared" style="color: var(--status-doctor);">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Delivered Today</div>
+          <div class="stat-value" id="stat-delivered" style="color: var(--status-completed);">0</div>
+        </div>
+      </div>
+
+      <!-- Prescription Queue -->
+      <div class="card">
+        <div class="flex justify-between items-center mb-4">
+          <h3>Prescription Queue</h3>
+          <input type="text" id="search" placeholder="Search Patient Name..." style="width: 250px;">
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Patient Name</th>
+                <th>Prescription</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pharmacy-table-body">
+              <!-- Rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div id="empty-state" style="text-align: center; padding: 40px; color: var(--text-muted); display: none;">
+          No pending prescriptions.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/pharmacy.js"></script>
+</body>
+
+</html>

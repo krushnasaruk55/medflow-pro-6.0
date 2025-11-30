@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Prescription - MedFlow Pro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .prescription-card {
+            background: white;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .hospital-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .hospital-details {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .patient-info {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .medication-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+
+        .medication-item {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .medication-item:last-child {
+            border-bottom: none;
+        }
+
+        .med-name {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .med-dosage {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .doctor-signature {
+            text-align: right;
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .doc-name {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .doc-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading" class="loading">
+        Loading prescription details...
+    </div>
+
+    <div id="error" class="loading" style="display: none; color: var(--danger);">
+        Invalid or expired link.
+    </div>
+
+    <div id="content" class="prescription-card" style="display: none;">
+        <div class="card-header">
+            <div class="hospital-name" id="h-name">Hospital Name</div>
+            <div class="hospital-details" id="h-address">Hospital Address</div>
+        </div>
+
+        <div class="card-body">
+            <div class="patient-info">
+                <div class="info-row">
+                    <span class="info-label">Patient Name</span>
+                    <span class="info-value" id="p-name">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Age / Gender</span>
+                    <span class="info-value" id="p-details">--</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date</span>
+                    <span class="info-value" id="v-date">--</span>
+                </div>
+            </div>
+
+            <div class="section-title">
+                📝 Diagnosis
+            </div>
+            <p id="p-diagnosis" style="margin-bottom: 24px; color: var(--text-main);">
+                --
+            </p>
+
+            <div class="section-title">
+                💊 Prescribed Medications
+            </div>
+            <ul class="medication-list" id="med-list">
+                <!-- Injected by JS -->
+            </ul>
+
+            <div class="doctor-signature">
+                <div class="doc-name" id="d-name">Dr. Name</div>
+                <div class="doc-meta">Attending Physician</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by MedFlow Pro
+    </div>
+
+    <script>
+        // Simple inline script for this standalone page
+        async function loadPrescription() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/public/prescription/${token}`);
+                if (!response.ok) throw new Error('Failed to load');
+
+                const data = await response.json();
+                renderPrescription(data);
+            } catch (error) {
+                console.error(error);
+                showError();
+            }
+        }
+
+        function renderPrescription(data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+
+            // Hospital Info
+            document.getElementById('h-name').textContent = data.hospital.name;
+            document.getElementById('h-address').textContent = data.hospital.address || '';
+
+            // Patient Info
+            document.getElementById('p-name').textContent = data.patient.name;
+            document.getElementById('p-details').textContent = `${data.patient.age} / ${data.patient.gender}`;
+            document.getElementById('v-date').textContent = new Date(data.patient.updatedAt || Date.now()).toLocaleDateString();
+
+            // Clinical Info
+            document.getElementById('p-diagnosis').textContent = data.patient.diagnosis || 'No diagnosis recorded.';
+            document.getElementById('d-name').textContent = data.doctor ? data.doctor.name : 'Doctor';
+
+            // Medications
+            const medList = document.getElementById('med-list');
+            medList.innerHTML = '';
+
+            if (data.patient.prescription) {
+                const lines = data.patient.prescription.split('\n');
+                lines.forEach(line => {
+                    if (line.trim()) {
+                        const li = document.createElement('li');
+                        li.className = 'medication-item';
+                        li.innerHTML = `<div class="med-name">${line}</div>`;
+                        medList.appendChild(li);
+                    }
+                });
+            } else {
+                medList.innerHTML = '<li class="medication-item" style="color: var(--text-muted);">No medications prescribed.</li>';
+            }
+        }
+
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+
+        loadPrescription();
+    </script>
+</body>
+
+</html>

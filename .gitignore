@@ -1,0 +1,12 @@
+node_modules/
+patients.db
+.env
+*.log
+.DS_Store
+check-db.js
+verify-fixes.js
+
+# Session storage
+data/sessions.db
+data/sessions.db-shm
+data/sessions.db-wal

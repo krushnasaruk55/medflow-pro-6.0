@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Settings - MedFlow Pro</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="settings-container">
+        <a href="/doctor.html" class="back-btn">← Back to Dashboard</a>
+        <h1>Prescription Template Settings</h1>
+        <p style="color: #6b7280; margin-bottom: 20px;">Customize your hospital's prescription template</p>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            Template saved successfully!
+        </div>
+
+        <div class="settings-grid">
+            <!-- Settings Form -->
+            <div class="settings-form">
+                <form id="templateForm">
+                    <!-- Hospital Information -->
+                    <div class="form-section">
+                        <h3>Hospital Information</h3>
+                        <div class="form-group">
+                            <label>Hospital Name</label>
+                            <input type="text" id="hospitalName" placeholder="Enter hospital name">
+                        </div>
+                        <div class="form-group">
+                            <label>Hospital Address</label>
+                            <textarea id="hospitalAddress" placeholder="Enter full address"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" id="hospitalPhone" placeholder="+91 XXXXXXXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="hospitalEmail" placeholder="hospital@example.com">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Hospital Logo</label>
+                        <input type="file" id="hospitalLogo" accept="image/*">
+                        <input type="hidden" id="hospitalLogoBase64">
+                        <div id="logoPreview" style="margin-top: 10px; max-width: 100px; display: none;">
+                            <img src="" style="width: 100%; border: 1px solid #ddd; padding: 2px;">
+                            <button type="button" class="btn btn-sm btn-danger" onclick="clearLogo()"
+                                style="margin-top: 5px; width: 100%;">Remove</button>
+                        </div>
+                    </div>
+            </div>
+
+            <!-- Template Settings -->
+            <div class="form-section">
+                <h3>Template Settings</h3>
+                <div class="form-group">
+                    <label>Template Name</label>
+                    <input type="text" id="templateName" value="Default Template">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Paper Size</label>
+                        <select id="paperSize">
+                            <option value="A4">A4</option>
+                            <option value="Letter">Letter</option>
+                            <option value="A5">A5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Font Size</label>
+                        <input type="number" id="fontSize" value="12" min="8" max="16">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout & Visibility -->
+            <div class="form-section">
+                <h3>Layout & Visibility</h3>
+                <div class="form-group">
+                    <label>Layout Style</label>
+                    <select id="layoutStyle">
+                        <option value="classic">Classic (Default)</option>
+                        <option value="modern">Modern (Sidebar)</option>
+                        <option value="minimal">Minimal</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="showVitals" checked>
+                    <label for="showVitals">Show Vitals Section</label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="showDiagnosis" checked>
+                    <label for="showDiagnosis">Show Diagnosis Section</label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="showHistory" checked>
+                    <label for="showHistory">Show Medical History</label>
+                </div>
+            </div>
+
+            <!-- Colors -->
+            <div class="form-section">
+                <h3>Colors</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Color</label>
+                        <div class="color-input">
+                            <input type="color" id="primaryColor" value="#0EA5E9">
+                            <input type="text" id="primaryColorText" value="#0EA5E9">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Color</label>
+                        <div class="color-input">
+                            <input type="color" id="secondaryColor" value="#666666">
+                            <input type="text" id="secondaryColorText" value="#666666">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header & Footer -->
+            <div class="form-section">
+                <h3>Header & Footer</h3>
+                <div class="form-group">
+                    <label>Header Text</label>
+                    <textarea id="headerText"
+                        placeholder="Additional header information (e.g., clinic timings, registration number)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Footer Text</label>
+                    <textarea id="footerText" placeholder="Footer disclaimer or additional information"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Doctor Signature</label>
+                <input type="file" id="doctorSignature" accept="image/*">
+                <input type="hidden" id="doctorSignatureBase64">
+                <div id="signaturePreview" style="margin-top: 10px; max-width: 150px; display: none;">
+                    <img src="" style="width: 100%; border: 1px solid #ddd; padding: 2px;">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="clearSignature()"
+                        style="margin-top: 5px; width: 100%;">Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Display Options -->
+        <div class="form-section">
+            <h3>Display Options</h3>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="showLetterhead" checked>
+                <label for="showLetterhead">Show Hospital Letterhead</label>
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="showWatermark">
+                <label for="showWatermark">Show Watermark</label>
+            </div>
+            <div class="form-group" id="watermarkTextGroup" style="display: none;">
+                <label>Watermark Text</label>
+                <input type="text" id="watermarkText" placeholder="e.g., COPY, CONFIDENTIAL">
+            </div>
+        </div>
+
+        <!-- Margins -->
+        <div class="form-section">
+            <h3>Page Margins (px)</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Top</label>
+                    <input type="number" id="marginTop" value="50" min="20" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Bottom</label>
+                    <input type="number" id="marginBottom" value="50" min="20" max="100">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Left</label>
+                    <input type="number" id="marginLeft" value="50" min="20" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Right</label>
+                    <input type="number" id="marginRight" value="50" min="20" max="100">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="save-btn">Save Template</button>
+        </form>
+    </div>
+
+    <!-- Live Preview -->
+    <div class="preview-panel">
+        <h3 style="margin-bottom: 15px;">Live Preview</h3>
+        <div class="preview-document" id="previewDoc">
+            <div class="preview-header" id="previewHeader">
+                <div class="preview-title" id="previewHospitalName">Medical Center</div>
+                <div class="preview-subtitle" id="previewAddress">Hospital Address</div>
+                <div class="preview-subtitle" id="previewContact">+91 XXXXXXXXXX | email@hospital.com</div>
+            </div>
+
+            <div class="preview-content">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div><strong>Doctor:</strong> Dr. John Doe</div>
+                    <div><strong>Date:</strong> 29/11/2025</div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-section-title">Patient Information</div>
+                    <div><strong>Name:</strong> Sample Patient</div>
+                    <div><strong>Age:</strong> 35 years | <strong>Gender:</strong> Male</div>
+                    <div><strong>Phone:</strong> +91 9876543210</div>
+                    <div><strong>Token No:</strong> 12</div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-section-title">Chief Complaint</div>
+                    <div>Fever and headache since 2 days</div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-section-title">℞ Prescription</div>
+                    <div>
+                        • Tab. Paracetamol 500mg - 1-0-1 (After meals) - 3 days<br>
+                        • Tab. Vitamin C - 0-1-0 (After meals) - 5 days<br>
+                        • Syrup Ambroxol 15ml - 2 TSF - TDS - 5 days
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center; color: #666; font-size: 11px;" id="previewHeaderText">
+                </div>
+
+                <div style="margin-top: 30px; text-align: right;">
+                    <div>_____________________</div>
+                    <div style="font-size: 12px;">Dr. John Doe</div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center; color: #666; font-size: 11px;" id="previewFooterText">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/prescription-settings.js"></script>
+</body>
+
+</html>

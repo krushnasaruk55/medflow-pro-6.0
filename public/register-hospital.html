@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Registration - MedFlow Pro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .register-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .register-logo span {
+            color: var(--secondary);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.2);
+        }
+
+        .step.completed {
+            background: var(--status-completed);
+            color: white;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .password-display {
+            background: #f0f9ff;
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 2px dashed var(--primary);
+            margin: 24px 0;
+        }
+
+        .password-code {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 4px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin: 16px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-container">
+        <div class="register-header">
+            <div class="register-logo">
+                <span>MedFlow</span> Pro
+            </div>
+            <h2>Register Your Hospital</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Start your 30-day free trial</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active" id="step1">1</div>
+            <div class="step" id="step2">2</div>
+            <div class="step" id="step3">3</div>
+        </div>
+
+        <!-- Step 1: Hospital Details -->
+        <div class="form-section active" id="section1">
+            <h3>Hospital Information</h3>
+            <form id="hospitalForm">
+                <div class="form-group">
+                    <label>Hospital Name *</label>
+                    <input type="text" id="hospitalName" placeholder="e.g., City General Hospital" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="hospitalEmail" placeholder="admin@hospital.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="hospitalPhone" placeholder="Contact number">
+                </div>
+
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="hospitalAddress" rows="2" placeholder="Hospital address"></textarea>
+                </div>
+
+                <button type="button" class="btn btn-primary" style="width: 100%;" onclick="nextStep(2)">
+                    Continue →
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: Admin User -->
+        <div class="form-section" id="section2">
+            <h3>Create Admin Account</h3>
+            <form id="adminForm">
+                <div class="form-group">
+                    <label>Admin Username *</label>
+                    <input type="text" id="adminUsername" placeholder="admin" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="adminEmail" placeholder="admin@hospital.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="adminPassword" placeholder="Strong password" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password *</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(1)">
+                        ← Back
+                    </button>
+                    <button type="button" class="btn btn-primary" style="flex: 1;" onclick="registerHospital()">
+                        Complete Registration
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 3: Success -->
+        <div class="form-section" id="section3">
+            <div class="success-message">
+                <div class="success-icon">🎉</div>
+                <h2>Registration Successful!</h2>
+                <p style="color: var(--text-muted); margin: 16px 0;">Your hospital has been registered successfully.</p>
+
+                <div class="password-display">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">
+                        Your Monthly Access Code
+                    </div>
+                    <div class="password-code" id="displayPassword">----·----</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                        Save this code - you'll need it to login
+                    </div>
+                </div>
+
+                <div class="alert alert-info" style="text-align: left; margin: 24px 0;">
+                    <strong>📋 Next Steps:</strong>
+                    <ol style="margin: 12px 0 0 20px; line-height: 1.8;">
+                        <li>Save your access code above</li>
+                        <li>Login at <code>/login.html</code></li>
+                        <li>Start using the system</li>
+                    </ol>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='/login.html'">
+                    Go to Login →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        let currentStep = 1;
+        let hospitalData = {};
+
+        function nextStep(step) {
+            // Validate current step
+            if (step === 2) {
+                const name = document.getElementById('hospitalName').value;
+                const email = document.getElementById('hospitalEmail').value;
+
+                if (!name || !email) {
+                    showToast('Error', 'Please fill required fields', 'error');
+                    return;
+                }
+
+                hospitalData.name = name;
+                hospitalData.email = email;
+                hospitalData.phone = document.getElementById('hospitalPhone').value;
+                hospitalData.address = document.getElementById('hospitalAddress').value;
+            }
+
+            // Update UI
+            document.getElementById(`section${currentStep}`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.add('completed');
+
+            currentStep = step;
+
+            document.getElementById(`section${step}`).classList.add('active');
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+
+        function prevStep(step) {
+            document.getElementById(`section${currentStep}`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+
+            currentStep = step;
+
+            document.getElementById(`section${step}`).classList.add('active');
+            document.getElementById(`step${step}`).classList.add('active');
+            document.getElementById(`step${step}`).classList.remove('completed');
+        }
+
+        async function registerHospital() {
+            const username = document.getElementById('adminUsername').value;
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!username || !password) {
+                showToast('Error', 'Please fill required fields', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Error', 'Passwords do not match', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Error', 'Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/hospitals/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        hospital: hospitalData,
+                        admin: { username, email, password }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('displayPassword').textContent = data.password;
+                    nextStep(3);
+                    showToast('Success!', 'Hospital registered successfully', 'success');
+                } else {
+                    showToast('Error', data.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showToast('Error', 'Failed to register hospital', 'error');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

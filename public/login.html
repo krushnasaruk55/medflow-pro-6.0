@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MedFlow Pro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .login-logo span {
+            color: var(--secondary);
+        }
+
+        .section-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .section-btn {
+            padding: 12px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .section-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .section-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 122, 228, 0.1);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">
+                <span>MedFlow</span> Pro
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Hospital Management System</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="section-selector">
+                <button type="button" class="section-btn active" data-section="reception">
+                    📋<br>Reception
+                </button>
+                <button type="button" class="section-btn" data-section="doctor">
+                    🩺<br>Doctor
+                </button>
+                <button type="button" class="section-btn" data-section="pharmacy">
+                    💊<br>Pharmacy
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>Monthly Access Code</label>
+                <input type="password" class="password-input" id="hospitalPassword" placeholder="XXXX-XXXX"
+                    autocomplete="off" required>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" autocomplete="off"
+                    style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" autocomplete="off"
+                    style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 16px;"
+                    required>
+            </div>
+
+            <div id="errorMessage" class="error-message"
+                style="display: none; color: var(--danger); text-align: center; margin: 12px 0;"></div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">
+                Access System
+            </button>
+        </form>
+
+        <div class="register-link">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                New hospital?
+                <a href="/register-hospital.html" style="color: var(--primary); font-weight: 600;">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        let selectedSection = 'reception';
+
+        // Section selector
+        document.querySelectorAll('.section-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.section-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedSection = btn.dataset.section;
+            });
+        });
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const hospitalPassword = document.getElementById('hospitalPassword').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMessage');
+
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // Important for session cookies
+                    body: JSON.stringify({
+                        hospitalPassword,
+                        username,
+                        userPassword: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store user info in sessionStorage
+                    sessionStorage.setItem('authenticated', 'true');
+                    sessionStorage.setItem('hospitalId', data.user.hospitalId);
+                    sessionStorage.setItem('username', data.user.username);
+                    sessionStorage.setItem('role', data.user.role);
+
+                    // Redirect based on section
+                    window.location.href = `${selectedSection}.html`;
+                } else {
+                    errorMsg.textContent = data.message || 'Invalid credentials';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Connection error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

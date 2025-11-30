@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard - MedFlow Pro</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <span>MedFlow</span> Pro
+      </div>
+      <nav class="main-nav">
+        <a href="reception.html">Reception</a>
+        <a href="doctor.html" class="active">Doctor</a>
+        <a href="pharmacy.html">Pharmacy</a>
+        <a href="lab.html">Lab</a>
+        <a href="prescription-settings.html">⚙️ Prescription Settings</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <select id="doctorSelect" style="padding: 6px; font-size: 0.9rem; width: 200px;">
+          <option value="">Select Profile...</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="dashboard-grid">
+
+      <!-- Left Column: Patient List -->
+      <div class="card" style="height: calc(100vh - 140px); overflow-y: auto;">
+        <h3>My Queue</h3>
+        <div id="queue-list" class="queue-list">
+          <!-- Injected by JS -->
+          <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+            No patients waiting.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Consultation Area -->
+      <div class="card" id="consultation-area" style="display: none;">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h2 id="p-name">Patient Name</h2>
+            <div class="text-muted" id="p-details">Age / Gender</div>
+          </div>
+          <div class="badge waiting" id="p-token">Token #0</div>
+        </div>
+
+        <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+
+          <!-- Vitals & History -->
+          <div>
+            <h4 class="text-muted" style="font-size: 0.85rem; text-transform: uppercase;">Vitals & History</h4>
+            <div class="form-group">
+              <label>Reason for Visit</label>
+              <div id="p-reason" style="padding: 10px; background: #f8fafc; border-radius: 8px;">-</div>
+            </div>
+
+            <div class="form-group">
+              <label>Attached Reports</label>
+              <div id="p-reports" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <!-- Report links injected here -->
+                <span class="text-muted" style="font-size: 0.9rem;">No reports attached.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagnosis & Prescription -->
+          <div>
+            <h4 class="text-muted" style="font-size: 0.85rem; text-transform: uppercase;">Consultation</h4>
+            <div class="form-group">
+              <label>Diagnosis / Notes</label>
+              <textarea id="diagnosis" rows="3" placeholder="Clinical notes..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Prescription</label>
+              <textarea id="prescription" rows="5" placeholder="Rx..."></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex gap-2 mt-4" style="border-top: 1px solid var(--border); padding-top: 20px;">
+          <button id="btn-download-pdf" class="btn btn-secondary"
+            style="background-color: #10b981; border-color: #10b981;">📄 Download PDF</button>
+          <button id="btn-save" class="btn btn-secondary">Save Notes</button>
+          <button id="btn-pharmacy" class="btn btn-primary">Send to Pharmacy</button>
+          <button id="btn-lab" class="btn btn-primary" style="background-color: #8b5cf6; border-color: #8b5cf6;">Send to
+            Lab</button>
+          <button id="btn-complete" class="btn btn-accent">Mark Completed</button>
+        </div>
+      </div>
+
+      <div id="empty-consultation" class="card"
+        style="display: flex; align-items: center; justify-content: center; height: 400px; color: var(--text-muted);">
+        Select a patient from the queue to start consultation.
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/doctor.js"></script>
+</body>
+
+</html>
